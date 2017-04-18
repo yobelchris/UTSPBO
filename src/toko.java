@@ -49,6 +49,7 @@ public class toko extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jComboBox1 = new javax.swing.JComboBox();
@@ -69,6 +70,14 @@ public class toko extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jComboBox2 = new javax.swing.JComboBox();
         jLabel10 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jRadioButton1 = new javax.swing.JRadioButton();
+        jRadioButton2 = new javax.swing.JRadioButton();
+        jTextField3 = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -106,7 +115,7 @@ public class toko extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel2.setText("Jumlah");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 90, -1, -1));
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 90, -1, -1));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -197,37 +206,95 @@ public class toko extends javax.swing.JFrame {
         getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 560, -1, -1));
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4" }));
-        getContentPane().add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 110, 70, 40));
+        getContentPane().add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 110, 70, 40));
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel10.setText("Judul");
         getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
 
-        setBounds(0, 0, 922, 659);
+        jTextField2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 110, 120, 40));
+
+        jLabel11.setText("ID Barang");
+        getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 90, -1, -1));
+
+        buttonGroup1.add(jRadioButton1);
+        jRadioButton1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jRadioButton1StateChanged(evt);
+            }
+        });
+        getContentPane().add(jRadioButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 120, -1, -1));
+
+        buttonGroup1.add(jRadioButton2);
+        getContentPane().add(jRadioButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 120, -1, -1));
+
+        jTextField3.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField3KeyPressed(evt);
+            }
+        });
+        getContentPane().add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 480, 220, 30));
+
+        jLabel12.setText("Pencarian Barang");
+        getContentPane().add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 460, -1, -1));
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(jTable2);
+
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 520, 530, 100));
+
+        setBounds(0, 0, 922, 683);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         int id = 0;
         int harga = 0;
-        String sql = "SELECT * FROM produk WHERE nama_barang = '"+jComboBox1.getSelectedItem()+"';";
+        String sql = null;
+        if(jComboBox1.isEnabled()){
+            sql = "SELECT * FROM produk WHERE nama_barang = '"+jComboBox1.getSelectedItem()+"';";
+        }else{
+            if(jTextField2.getText().isEmpty()){
+                JOptionPane.showMessageDialog(this, "ID kosong","Peringatan",JOptionPane.WARNING_MESSAGE);
+            }else{
+                sql = "SELECT * FROM produk WHERE id = '"+jTextField2.getText()+"';";
+            }
+        }
         ResultSet rs = KoneksiDB.executeQuery(sql);
+        int cek = 0;
         try{
             while(rs.next()){
                 id = rs.getInt(1);
                 harga = rs.getInt(3);
+                cek++;
+            }
+            
+            if(cek<=0){
+                JOptionPane.showMessageDialog(this, "Barang dengan id tersebut tidak ada","Peringatan",JOptionPane.WARNING_MESSAGE);
+            }else{
+                String sql1 = "INSERT INTO struk (id_transaksi,id_barang,jumlah,harga) VALUES("+idTrans+","+id+","+Integer.parseInt(jComboBox2.getSelectedItem().toString())+","+(harga*Integer.parseInt(jComboBox2.getSelectedItem().toString()))+");";
+                int status = KoneksiDB.execute(sql1);
+                if(status == 1){
+                    JOptionPane.showMessageDialog(this, "Data berhasil ditambahkan", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                }else{
+                    JOptionPane.showMessageDialog(this, "Data gagal ditambahkan","Sukses",JOptionPane.INFORMATION_MESSAGE);
+                }
+                SelectData();
             }
         }catch(SQLException ex){
             Logger.getLogger(toko.class.getName()).log(Level.SEVERE,null,ex);
         }
-        String sql1 = "INSERT INTO struk (id_transaksi,id_barang,jumlah,harga) VALUES("+idTrans+","+id+","+Integer.parseInt(jComboBox2.getSelectedItem().toString())+","+(harga*Integer.parseInt(jComboBox2.getSelectedItem().toString()))+");";
-        int status = KoneksiDB.execute(sql1);
-        if(status == 1){
-            JOptionPane.showMessageDialog(this, "Data berhasil ditambahkan", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-        }else{
-            JOptionPane.showMessageDialog(this, "Data gagal ditambahkan","Sukses",JOptionPane.INFORMATION_MESSAGE);
-        }
-        SelectData();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -248,6 +315,8 @@ public class toko extends javax.swing.JFrame {
         jLabel6.setText("");
         jLabel9.setText("");
         jLabel3.setText(kasir);
+        buttonGroup1.setSelected(jRadioButton1.getModel(), true);
+        jTextField2.setEnabled(false);
         SelectData();
     }//GEN-LAST:event_formWindowOpened
 
@@ -284,6 +353,7 @@ public class toko extends javax.swing.JFrame {
         jComboBox1.setSelectedIndex(0);
         jComboBox2.setSelectedIndex(0);
         jTextField1.setText("");
+        jTextField2.setText("");
         jLabel9.setText("");
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -306,6 +376,22 @@ public class toko extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jRadioButton1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jRadioButton1StateChanged
+        // TODO add your handling code here:
+       if(buttonGroup1.isSelected(jRadioButton1.getModel())){
+           jComboBox1.setEnabled(true);
+           jTextField2.setEnabled(false);
+       }else if(buttonGroup1.isSelected(jRadioButton2.getModel())){
+           jComboBox1.setEnabled(false);
+           jTextField2.setEnabled(true);
+       }
+    }//GEN-LAST:event_jRadioButton1StateChanged
+
+    private void jTextField3KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField3KeyPressed
+        // TODO add your handling code here:
+        cariData(jTextField3.getText());
+    }//GEN-LAST:event_jTextField3KeyPressed
 
     /**
      * @param args the command line arguments
@@ -343,6 +429,7 @@ public class toko extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -351,6 +438,8 @@ public class toko extends javax.swing.JFrame {
     private javax.swing.JComboBox jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -360,9 +449,15 @@ public class toko extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
 
     private void setTanggal() {
@@ -375,6 +470,26 @@ public class toko extends javax.swing.JFrame {
     private void setKembalian(){
         kembalian = Float.parseFloat(jTextField1.getText().toString())-tot;
         jLabel9.setText("Rp."+kembalian);
+    }
+    
+    private void cariData(String cari){
+        String[]kolom={"ID","Nama Barang","Harga"};
+        DefaultTableModel dtm;
+        dtm = new DefaultTableModel(null, kolom);
+        String sql = "SELECT * FROM produk WHERE nama_barang LIKE '%"+cari+"%';";
+        ResultSet rs = KoneksiDB.executeQuery(sql);
+        try{
+            while(rs.next()){
+                String id = String.valueOf(rs.getInt(1));
+                String nama = rs.getString(2);
+                String harga = String.valueOf(rs.getInt(3));
+                String[]data = {id,nama,harga};
+                dtm.addRow(data);
+            }
+        }catch(SQLException ex){
+            Logger.getLogger(toko.class.getName()).log(Level.SEVERE,null,ex);
+        }
+        jTable2.setModel(dtm);
     }
 
     private void SelectData(){
